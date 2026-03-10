@@ -1,0 +1,496 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JIT MARKETING | 짓마케팅</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- React & ReactDOM -->
+    <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+    <!-- Babel -->
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <!-- FontAwesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700;900&display=swap');
+        body { font-family: 'Noto Sans KR', sans-serif; }
+        
+        /* 모바일 가독성을 위한 단어 단위 줄바꿈 */
+        .keep-all { word-break: keep-all; word-wrap: break-word; }
+        
+        .glass-nav { background: rgba(255, 255, 255, 0.8); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); }
+        .gradient-text { background-clip: text; -webkit-background-clip: text; color: transparent; background-image: linear-gradient(to right, #f97316, #ef4444); }
+        
+        /* 부드러운 스크롤 */
+        html { scroll-behavior: smooth; }
+    </style>
+</head>
+<body class="bg-slate-50 text-slate-800 selection:bg-orange-500 selection:text-white overflow-x-hidden">
+    <div id="root"></div>
+
+    <script type="text/babel">
+        const { useState, useEffect } = React;
+
+        const App = () => {
+            const [isMenuOpen, setIsMenuOpen] = useState(false);
+            const [scrolled, setScrolled] = useState(false);
+
+            useEffect(() => {
+                const handleScroll = () => {
+                    setScrolled(window.scrollY > 20);
+                };
+                window.addEventListener('scroll', handleScroll);
+                return () => window.removeEventListener('scroll', handleScroll);
+            }, []);
+
+            const scrollToSection = (id) => {
+                const element = document.getElementById(id);
+                if (element) {
+                    const headerOffset = 80;
+                    const elementPosition = element.getBoundingClientRect().top;
+                    const offsetPosition = elementPosition + window.pageYOffset - headerOffset;
+                    window.scrollTo({ top: offsetPosition, behavior: "smooth" });
+                }
+                setIsMenuOpen(false);
+            };
+
+            return (
+                <div className="min-h-screen flex flex-col">
+                    {/* Navigation */}
+                    <nav className={`fixed w-full z-50 transition-all duration-300 ${scrolled ? 'py-2' : 'py-4 md:py-6'}`}>
+                        <div className="container mx-auto px-4 md:px-6 max-w-7xl">
+                            <div className={`border border-white/20 shadow-lg shadow-black/5 rounded-full px-5 py-3 flex justify-between items-center transition-all ${scrolled ? 'glass-nav bg-white/90' : 'bg-white/70 backdrop-blur-md'}`}>
+                                <div className="text-lg md:text-2xl font-black tracking-tighter text-slate-900 flex items-center gap-2 cursor-pointer" onClick={() => window.scrollTo(0,0)}>
+                                    <span className="bg-gradient-to-br from-orange-500 to-red-600 text-white px-2 py-0.5 rounded-lg transform -rotate-3 shadow-lg shadow-orange-500/30 text-sm md:text-base">JIT</span>
+                                    <span className="gradient-text bg-gradient-to-r from-slate-900 to-slate-700">MARKETING</span>
+                                </div>
+                                
+                                {/* Desktop Menu */}
+                                <div className="hidden md:flex gap-8 font-semibold text-sm text-slate-600">
+                                    {['소개', '차별점', '서비스', '포트폴리오', '프로세스'].map((item) => (
+                                        <button 
+                                            key={item} 
+                                            onClick={() => scrollToSection(item === '소개' ? 'about' : item === '차별점' ? 'features' : item === '서비스' ? 'services' : item === '포트폴리오' ? 'portfolio' : 'process')}
+                                            className="hover:text-orange-600 transition-colors relative group py-2"
+                                        >
+                                            {item}
+                                            <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-orange-500 transition-all group-hover:w-full"></span>
+                                        </button>
+                                    ))}
+                                </div>
+
+                                <button 
+                                    onClick={() => scrollToSection('contact')}
+                                    className="hidden md:flex items-center gap-2 bg-slate-900 text-white px-5 py-2 rounded-full font-bold text-sm hover:bg-orange-600 transition-all shadow-lg hover:shadow-orange-500/25 transform hover:-translate-y-0.5"
+                                >
+                                    문의하기 <i className="fa-solid fa-arrow-right"></i>
+                                </button>
+
+                                {/* Mobile Menu Button */}
+                                <button className="md:hidden text-slate-800 p-2" onClick={() => setIsMenuOpen(!isMenuOpen)}>
+                                    <i className={`fa-solid ${isMenuOpen ? 'fa-times' : 'fa-bars'} text-xl`}></i>
+                                </button>
+                            </div>
+                        </div>
+
+                        {/* Mobile Menu Dropdown */}
+                        {isMenuOpen && (
+                            <div className="absolute top-full left-0 w-full px-4 mt-2">
+                                <div className="bg-white/95 backdrop-blur-xl border border-slate-100 shadow-2xl rounded-2xl p-2 flex flex-col gap-1 overflow-hidden">
+                                    {['소개', '차별점', '서비스', '포트폴리오', '프로세스', '문의하기'].map((item) => (
+                                        <button 
+                                            key={item}
+                                            onClick={() => scrollToSection(item === '소개' ? 'about' : item === '차별점' ? 'features' : item === '서비스' ? 'services' : item === '포트폴리오' ? 'portfolio' : item === '프로세스' ? 'process' : 'contact')}
+                                            className="text-left text-base font-bold text-slate-700 py-4 px-4 rounded-xl hover:bg-orange-50 hover:text-orange-600 transition-colors border-b border-slate-50 last:border-0"
+                                        >
+                                            {item}
+                                        </button>
+                                    ))}
+                                </div>
+                            </div>
+                        )}
+                    </nav>
+
+                    {/* Hero Section */}
+                    <section className="relative pt-32 pb-16 lg:pt-52 lg:pb-32 overflow-hidden bg-[#0a0a0a]">
+                        <div className="absolute top-[-20%] left-[-10%] w-[300px] md:w-[500px] h-[300px] md:h-[500px] bg-orange-600/20 rounded-full blur-[80px] md:blur-[120px] animate-pulse"></div>
+                        <div className="absolute bottom-[-10%] right-[-5%] w-[300px] md:w-[600px] h-[300px] md:h-[600px] bg-blue-600/10 rounded-full blur-[80px] md:blur-[120px]"></div>
+                        
+                        <div className="container mx-auto px-6 relative z-10 text-center">
+                            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/5 border border-white/10 text-orange-400 font-bold text-xs md:text-sm mb-6 backdrop-blur-sm shadow-2xl">
+                                <i className="fa-solid fa-sparkles animate-pulse"></i>
+                                <span>진주 · 경남 매출 성장 파트너</span>
+                            </div>
+                            
+                            <h1 className="text-4xl md:text-7xl lg:text-8xl font-black text-white mb-6 leading-tight tracking-tight keep-all">
+                                광고는 노출이 아니라<br className="block" />
+                                <span className="gradient-text">매출입니다.</span>
+                            </h1>
+                            
+                            <p className="text-slate-400 text-base md:text-2xl max-w-2xl mx-auto mb-10 leading-relaxed font-light keep-all">
+                                보여주기식 광고에 돈 낭비하지 마세요.<br className="hidden md:block"/>
+                                <strong className="text-white font-semibold">사장님의 마음</strong>으로 매출 구조를 직접 설계합니다.
+                            </p>
+                            
+                            <div className="flex flex-col sm:flex-row gap-4 justify-center px-4">
+                                <button onClick={() => scrollToSection('contact')} className="w-full sm:w-auto group relative px-8 py-4 bg-orange-600 text-white rounded-xl md:rounded-full font-bold text-lg overflow-hidden shadow-[0_0_20px_-5px_rgba(234,88,12,0.5)] transition-all active:scale-95">
+                                    <span className="relative z-10 flex items-center justify-center gap-2">무료 상담 신청하기 <i className="fa-solid fa-arrow-right group-hover:translate-x-1 transition-transform"></i></span>
+                                    <div className="absolute inset-0 bg-gradient-to-r from-orange-600 to-red-600 opacity-0 group-hover:opacity-100 transition-opacity"></div>
+                                </button>
+                                <button onClick={() => scrollToSection('portfolio')} className="w-full sm:w-auto px-8 py-4 bg-white/5 text-white backdrop-blur-sm border border-white/10 rounded-xl md:rounded-full font-bold text-lg hover:bg-white/10 transition-all active:scale-95">
+                                    성공 사례 보기
+                                </button>
+                            </div>
+                        </div>
+                    </section>
+
+                    {/* About Section */}
+                    <section id="about" className="py-16 md:py-24 bg-white relative overflow-hidden">
+                        <div className="hidden lg:block absolute top-40 right-0 w-1/2 h-full bg-slate-50 rounded-tl-[100px] z-0"></div>
+                        <div className="container mx-auto px-6 relative z-10">
+                            <div className="flex flex-col lg:flex-row gap-10 lg:gap-16 items-center">
+                                {/* Image Area */}
+                                <div className="w-full lg:w-5/12 relative group max-w-md mx-auto lg:max-w-none">
+                                    <div className="absolute inset-0 bg-orange-500 rounded-3xl rotate-6 opacity-20 blur-xl"></div>
+                                    <div className="relative bg-white p-2 rounded-3xl shadow-xl border border-slate-100">
+                                        <div className="aspect-square bg-slate-900 rounded-2xl overflow-hidden flex items-center justify-center p-8">
+                                            <img 
+                                                src="https://i.ibb.co/cKsPKXzW/file-00000000aa64624399482c683c595839.png" 
+                                                alt="JIT Marketing Logo" 
+                                                className="w-full h-full object-contain filter drop-shadow-[0_0_15px_rgba(255,255,255,0.3)]" 
+                                            />
+                                        </div>
+                                        <div className="absolute bottom-4 left-4 right-4 bg-white/95 backdrop-blur-md p-4 rounded-xl shadow-lg border border-slate-100 text-center lg:text-left">
+                                            <h3 className="text-lg md:text-xl font-bold text-slate-900">서효승 대표</h3>
+                                            <p className="text-xs md:text-sm text-slate-500 font-medium">현장 경험 8년차 실전 마케터</p>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                {/* Text Area */}
+                                <div className="w-full lg:w-7/12 text-center lg:text-left">
+                                    <div className="inline-block text-orange-600 font-bold tracking-wider text-xs md:text-sm mb-3 uppercase bg-orange-50 px-3 py-1 rounded-full">About CEO</div>
+                                    <h2 className="text-3xl md:text-5xl font-black text-slate-900 mb-6 leading-tight keep-all">
+                                        매장 운영을 이해하는<br/>
+                                        <span className="relative inline-block mt-1">
+                                            <span className="relative z-10 text-orange-600">실전형 마케터</span>
+                                            <span className="absolute bottom-1 left-0 w-full h-3 bg-orange-100 -z-10"></span>
+                                        </span>
+                                    </h2>
+                                    <p className="text-slate-600 text-base md:text-lg leading-relaxed mb-8 keep-all">
+                                        안녕하세요, 짓마케팅 대표 서효승입니다.<br/><br/>
+                                        저는 책상에만 앉아있는 마케터가 아닙니다. 직접 매장을 운영해 본 사장이었고, 주방과 홀을 뛰어다닌 실무자였습니다. 
+                                        <br/><br/>
+                                        사장님이 진짜 원하는 것은 예쁜 사진이 아니라, <strong>통장에 찍히는 '매출'</strong>이라는 것을 누구보다 잘 알고 있습니다. 
+                                        그렇기에 짓마케팅은 겉치레가 아닌 <strong>실질적인 매출 구조 개선</strong>에 집중합니다.
+                                    </p>
+                                    
+                                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-left bg-slate-50 p-6 rounded-2xl border border-slate-100">
+                                        {[
+                                            '2025 짓마케팅 대표',
+                                            '2024 궁중수라간(한스톤) 실장',
+                                            '2023 연해주 마케팅 담당 실장',
+                                            '2022 서경방송 팀에스 마케팅 실장',
+                                            '2017 화양연화 대표 (직접 운영)'
+                                        ].map((career, idx) => (
+                                            <div key={idx} className="flex items-center gap-3 text-slate-700 font-medium text-sm md:text-base">
+                                                <div className="w-1.5 h-1.5 rounded-full bg-orange-500 flex-shrink-0"></div>
+                                                {career}
+                                            </div>
+                                        ))}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+
+                    {/* Features Section */}
+                    <section id="features" className="py-16 md:py-24 bg-slate-50">
+                        <div className="container mx-auto px-6">
+                            <div className="text-center mb-12">
+                                <h2 className="text-2xl md:text-4xl font-black text-slate-900 mb-4 keep-all">왜 짓마케팅인가요?</h2>
+                                <p className="text-slate-600 text-base md:text-lg max-w-2xl mx-auto keep-all">
+                                    다른 대행사와는 다릅니다. 사장님의 고민을 해결하는 4가지 핵심 차별점
+                                </p>
+                            </div>
+
+                            <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6">
+                                <BentoCard 
+                                    icon="fa-users"
+                                    title="현장형 마케팅"
+                                    desc="사장 경험이 있는 대표가 직접 기획하고 실무자로 뜁니다."
+                                    color="bg-blue-600"
+                                />
+                                <BentoCard 
+                                    icon="fa-bullseye"
+                                    title="이벤트 설계 능력"
+                                    desc="서경방송 마케팅 실장 경험으로 확실한 이벤트 기획력을 보유했습니다."
+                                    color="bg-orange-500"
+                                />
+                                <BentoCard 
+                                    icon="fa-chart-column"
+                                    title="주간 보고 시스템"
+                                    desc="매주 월~일 성과 정리. 실행 → 피드백 → 재설계 구조로 투명하게 보고합니다."
+                                    color="bg-emerald-500"
+                                />
+                                <BentoCard 
+                                    icon="fa-money-bill-trend-up"
+                                    title="합리적 수수료"
+                                    desc="고정 운영비 방식. 과도한 광고비 유도 없이 꼭 필요한 것만 제안합니다."
+                                    color="bg-purple-600"
+                                />
+                            </div>
+                        </div>
+                    </section>
+
+                    {/* Services Section */}
+                    <section id="services" className="py-16 md:py-24 bg-[#0F172A] text-white">
+                        <div className="container mx-auto px-6">
+                            <div className="flex flex-col md:flex-row justify-between items-end mb-10 border-b border-slate-800 pb-6">
+                                <div className="mb-4 md:mb-0">
+                                    <h2 className="text-2xl md:text-4xl font-black mb-2 keep-all">제공 서비스</h2>
+                                    <p className="text-slate-400 text-sm md:text-base keep-all">매출 상승을 위한 All-in-One 솔루션</p>
+                                </div>
+                                <button onClick={() => scrollToSection('contact')} className="hidden md:flex items-center gap-2 text-orange-400 hover:text-orange-300 font-bold transition-colors">
+                                    상담 신청하기 <i className="fa-solid fa-arrow-right"></i>
+                                </button>
+                            </div>
+
+                            <div className="grid md:grid-cols-2 gap-5">
+                                <ServiceCardModern 
+                                    title="네이버 플레이스 & 파워링크"
+                                    desc="검색하는 고객을 놓치지 않도록 최적화합니다."
+                                    items={['플레이스 상위 노출 최적화', '업장 컨셉에 맞는 브랜딩', '검색 광고 효율 관리']}
+                                />
+                                <ServiceCardModern 
+                                    title="SNS & 콘텐츠 마케팅"
+                                    desc="지역 타겟에게 매력적으로 다가갑니다."
+                                    highlight={true}
+                                    items={['진주엔, 진주어바웃 등 지역 대형 채널 제휴', '인스타그램 스폰서드 광고 및 릴스 기획', '파급력 있는 블로거 체험단(월 3인 이상) 운영']}
+                                />
+                                <ServiceCardModern 
+                                    title="오프라인 & 로컬 광고"
+                                    desc="우리 동네 손님을 확실하게 잡습니다."
+                                    items={['현수막, 배너 등 외부 광고물 제작', '당근마켓 지역 광고 집행 및 단골 관리', '카카오맵, 구글맵 등 로컬 플랫폼 최적화']}
+                                />
+                                <ServiceCardModern 
+                                    title="매장 브랜딩 컨설팅"
+                                    desc="한 번 오면 단골이 되게 만듭니다."
+                                    items={['매장 정체성 확립', '매출 구조 개선 제안', '고객 경험(CX) 설계 및 랜딩페이지 제작']}
+                                />
+                            </div>
+                            
+                            <div className="mt-8 md:hidden text-center">
+                                <button onClick={() => scrollToSection('contact')} className="w-full bg-slate-800 text-orange-400 py-3 rounded-xl font-bold border border-slate-700">
+                                    상담 신청하기 <i className="fa-solid fa-arrow-right ml-2"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </section>
+
+                    {/* Portfolio Section */}
+                    <section id="portfolio" className="py-16 md:py-24 bg-white">
+                        <div className="container mx-auto px-6">
+                            <div className="text-center mb-12">
+                                <h2 className="text-2xl md:text-4xl font-black text-slate-900 mb-4 keep-all">함께하는 파트너</h2>
+                                <p className="text-slate-600 text-sm md:text-base keep-all">진주 및 경남 지역의 다양한 업종에서 짓마케팅과 함께 성장을 만들어가고 있습니다.</p>
+                            </div>
+
+                            <div className="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-6">
+                                {[
+                                    { name: '타코이떠', cat: '외식업' },
+                                    { name: '9992누룽지통닭', cat: '외식업' },
+                                    { name: '궁중수라간', cat: '외식업' },
+                                    { name: '연해주', cat: '외식업' },
+                                    { name: '돌담한우숯불명가', cat: '외식업' },
+                                    { name: '하바나헤어', cat: '뷰티' },
+                                    { name: '퍼스트헤어', cat: '뷰티' },
+                                    { name: '모르면손해', cat: '부동산' }
+                                ].map((client, idx) => (
+                                    <div key={idx} className="group bg-slate-50 border border-slate-100 p-6 md:p-8 rounded-2xl text-center hover:bg-white hover:shadow-xl hover:-translate-y-1 transition-all duration-300 cursor-default">
+                                        <div className="w-10 h-10 md:w-12 md:h-12 rounded-full bg-slate-200 mx-auto mb-3 group-hover:bg-orange-100 group-hover:text-orange-600 flex items-center justify-center transition-colors">
+                                            <span className="font-bold text-slate-400 group-hover:text-orange-600">{client.name[0]}</span>
+                                        </div>
+                                        <h4 className="font-bold text-base md:text-lg text-slate-800 mb-2 keep-all">{client.name}</h4>
+                                        <span className="text-xs font-semibold text-slate-400 bg-white border border-slate-200 px-2 py-1 rounded-full group-hover:border-orange-200 group-hover:text-orange-600 transition-colors">{client.cat}</span>
+                                    </div>
+                                ))}
+                            </div>
+                        </div>
+                    </section>
+
+                    {/* Target Audience */}
+                    <section className="py-16 bg-gradient-to-r from-orange-500 to-red-600 text-white">
+                        <div className="container mx-auto px-6 text-center">
+                            <h2 className="text-2xl md:text-4xl font-black mb-10 keep-all">이런 사장님께 강력 추천합니다</h2>
+                            <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-4">
+                                <TargetCardModern text="매출이 정체되어 돌파구가 필요한 매장" />
+                                <TargetCardModern text="SNS는 하지만 방향을 못 잡고 있는 곳" />
+                                <TargetCardModern text="이벤트는 하고 싶지만 아이디어가 없는 곳" />
+                                <TargetCardModern text="단순 홍보가 아닌 '매출 변화'를 원하는 곳" />
+                            </div>
+                        </div>
+                    </section>
+
+                    {/* Process Section */}
+                    <section id="process" className="py-16 md:py-24 bg-white">
+                        <div className="container mx-auto px-6">
+                            <div className="text-center mb-12">
+                                <h2 className="text-2xl md:text-4xl font-black text-slate-900 mb-4 keep-all">업무 프로세스</h2>
+                                <p className="text-slate-600 text-sm md:text-base keep-all">체계적인 6단계 시스템으로 확실한 성과를 만듭니다.</p>
+                            </div>
+                            
+                            {/* Desktop Process */}
+                            <div className="hidden md:flex justify-between relative px-10">
+                                <div className="absolute top-1/2 left-0 w-full h-0.5 bg-slate-100 -translate-y-1/2 z-0"></div>
+                                {['매장 분석', '타겟 재설정', '매출 구조 설계', '실행', '피드백', '지속 개선'].map((step, idx) => (
+                                    <div key={idx} className="relative z-10 flex flex-col items-center group">
+                                        <div className={`w-16 h-16 rounded-2xl flex items-center justify-center font-bold text-xl mb-6 border-4 transition-all duration-300 shadow-lg ${idx === 3 ? 'bg-orange-500 border-white text-white scale-110 shadow-orange-500/40' : 'bg-white border-slate-100 text-slate-400 group-hover:border-orange-200 group-hover:text-orange-500'}`}>
+                                            {idx + 1}
+                                        </div>
+                                        <span className={`font-bold text-lg ${idx === 3 ? 'text-orange-600' : 'text-slate-700'}`}>{step}</span>
+                                    </div>
+                                ))}
+                            </div>
+                            
+                            {/* Mobile Process */}
+                            <div className="md:hidden space-y-3">
+                                {['매장 분석', '타겟 재설정', '매출 구조 설계', '실행', '피드백', '지속 개선'].map((step, idx) => (
+                                    <div key={idx} className={`flex items-center gap-4 p-4 rounded-xl border ${idx === 3 ? 'bg-orange-50 border-orange-200' : 'bg-slate-50 border-slate-100'}`}>
+                                        <div className={`w-10 h-10 rounded-lg flex items-center justify-center font-bold shadow-sm flex-shrink-0 ${idx === 3 ? 'bg-orange-500 text-white' : 'bg-white text-slate-500'}`}>
+                                            {idx + 1}
+                                        </div>
+                                        <span className={`font-bold ${idx === 3 ? 'text-orange-700' : 'text-slate-700'}`}>{step}</span>
+                                    </div>
+                                ))}
+                            </div>
+                        </div>
+                    </section>
+
+                    {/* Contact Section */}
+                    <section id="contact" className="py-16 md:py-24 bg-[#0a0a0a] relative overflow-hidden">
+                        <div className="absolute top-0 right-0 w-[300px] h-[300px] bg-purple-600/20 rounded-full blur-[80px] opacity-30"></div>
+                        <div className="absolute bottom-0 left-0 w-[300px] h-[300px] bg-orange-600/20 rounded-full blur-[80px] opacity-30"></div>
+
+                        <div className="container mx-auto px-6 relative z-10">
+                            <div className="max-w-5xl mx-auto">
+                                <div className="text-center mb-12">
+                                    <h2 className="text-3xl md:text-5xl font-black text-white mb-4 keep-all">지금 바로 시작하세요</h2>
+                                    <p className="text-base md:text-xl text-slate-400 keep-all">
+                                        혼자 고민하지 마세요.<br className="md:hidden"/> 짓마케팅이 사장님의 든든한 파트너가 되어드리겠습니다.
+                                    </p>
+                                </div>
+                                
+                                <div className="bg-white/5 backdrop-blur-xl border border-white/10 rounded-3xl p-6 md:p-12 shadow-2xl">
+                                    <div className="grid md:grid-cols-2 gap-10">
+                                        <div className="space-y-8 text-center md:text-left">
+                                            <div>
+                                                <h3 className="text-2xl font-bold text-white mb-2">CONTACT US</h3>
+                                                <p className="text-slate-400 text-sm">언제든 편하게 문의해주세요.</p>
+                                            </div>
+                                            
+                                            <div className="space-y-6 inline-block text-left">
+                                                <ContactItem icon="fa-location-dot" title="오시는 길" desc="진주시 순환로 501 2층 짓마케팅" />
+                                                <ContactItem icon="fa-brands fa-instagram" title="인스타그램" desc="@Mat_chin_nom" link="https://instagram.com/Mat_chin_nom" />
+                                                <ContactItem icon="fa-phone" title="문의전화" desc="010-9382-9110" />
+                                            </div>
+                                        </div>
+                                        
+                                        <form className="space-y-4" onSubmit={(e) => e.preventDefault()}>
+                                            <div className="space-y-2">
+                                                <label className="text-sm font-medium text-slate-400 ml-1">업체명 / 성함</label>
+                                                <input type="text" className="w-full bg-slate-900/50 border border-slate-700 rounded-xl px-4 py-4 focus:outline-none focus:border-orange-500 text-white placeholder-slate-600 transition-colors" placeholder="예) 짓마케팅 / 홍길동" />
+                                            </div>
+                                            <div className="space-y-2">
+                                                <label className="text-sm font-medium text-slate-400 ml-1">연락처</label>
+                                                <input type="text" className="w-full bg-slate-900/50 border border-slate-700 rounded-xl px-4 py-4 focus:outline-none focus:border-orange-500 text-white placeholder-slate-600 transition-colors" placeholder="010-0000-0000" />
+                                            </div>
+                                            <div className="space-y-2">
+                                                <label className="text-sm font-medium text-slate-400 ml-1">문의 내용</label>
+                                                <textarea rows="3" className="w-full bg-slate-900/50 border border-slate-700 rounded-xl px-4 py-4 focus:outline-none focus:border-orange-500 text-white placeholder-slate-600 transition-colors" placeholder="고민 중인 내용을 간단히 적어주세요."></textarea>
+                                            </div>
+                                            <button className="w-full bg-gradient-to-r from-orange-600 to-red-600 hover:from-orange-500 hover:to-red-500 text-white font-bold py-4 rounded-xl transition-all shadow-lg shadow-orange-900/40 transform hover:-translate-y-1 mt-2">
+                                                무료 상담 신청하기
+                                            </button>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+
+                    {/* Footer */}
+                    <footer className="bg-black text-slate-600 py-10 text-center text-sm border-t border-slate-900 mt-auto">
+                        <p className="font-bold text-slate-500 mb-2">JIT MARKETING</p>
+                        <p>© 2025 JIT MARKETING. All rights reserved.</p>
+                        <p className="mt-2">대표: 서효승 | 경남 진주시</p>
+                    </footer>
+                </div>
+            );
+        };
+
+        const BentoCard = ({ icon, title, desc, color }) => (
+            <div className="group bg-white p-6 md:p-8 rounded-2xl md:rounded-3xl border border-slate-100 shadow-sm hover:shadow-2xl hover:shadow-slate-200/50 transition-all duration-500 hover:-translate-y-1 overflow-hidden relative text-left">
+                <div className={`absolute top-0 right-0 w-24 h-24 md:w-32 md:h-32 ${color} opacity-5 rounded-bl-full group-hover:scale-150 transition-transform duration-700 ease-out`}></div>
+                <div className={`w-12 h-12 md:w-14 md:h-14 rounded-xl md:rounded-2xl ${color} flex items-center justify-center mb-4 md:mb-6 shadow-lg shadow-${color}/30 text-white group-hover:scale-110 transition-transform duration-300`}>
+                    <i className={`fa-solid ${icon} text-xl md:text-2xl`}></i>
+                </div>
+                <h3 className="text-lg md:text-xl font-bold text-slate-900 mb-2 md:mb-3 keep-all">{title}</h3>
+                <p className="text-slate-500 leading-relaxed text-sm font-medium keep-all">{desc}</p>
+            </div>
+        );
+
+        const ServiceCardModern = ({ title, desc, items, highlight }) => (
+            <div className={`p-6 md:p-8 rounded-2xl md:rounded-3xl border transition-all duration-500 group relative overflow-hidden text-left ${highlight ? 'bg-slate-800/50 border-orange-500/30 shadow-xl shadow-orange-900/20' : 'bg-slate-800/30 border-white/5 hover:border-white/20 hover:bg-slate-800/50'}`}>
+                {highlight && <div className="absolute top-0 right-0 bg-orange-600 text-white text-xs font-bold px-3 py-1 rounded-bl-xl">BEST</div>}
+                
+                <div className="relative z-10">
+                    <h3 className="text-xl md:text-2xl font-bold text-white mb-2 keep-all">{title}</h3>
+                    <p className="text-slate-400 text-sm mb-6 keep-all">{desc}</p>
+                    <ul className="space-y-3">
+                        {items.map((item, idx) => (
+                            <li key={idx} className="flex items-start gap-3 text-slate-300">
+                                <div className={`mt-0.5 p-0.5 rounded-full flex-shrink-0 ${highlight ? 'bg-orange-500/20 text-orange-500' : 'bg-slate-700 text-slate-400'}`}>
+                                    <i className="fa-solid fa-check text-[10px]"></i>
+                                </div>
+                                <span className={`text-sm md:text-base keep-all ${idx === 0 && highlight ? "text-orange-400 font-semibold" : ""}`}>{item}</span>
+                            </li>
+                        ))}
+                    </ul>
+                </div>
+            </div>
+        );
+
+        const TargetCardModern = ({ text }) => (
+            <div className="bg-white/10 backdrop-blur-sm border border-white/20 p-5 rounded-2xl text-left hover:bg-white/20 transition-colors">
+                <i className="fa-regular fa-message mb-3 text-orange-200 opacity-80 text-xl block"></i>
+                <p className="font-bold text-base md:text-lg text-white leading-snug keep-all">"{text}"</p>
+            </div>
+        );
+
+        const ContactItem = ({ icon, title, desc, link }) => (
+            <div className="flex items-center gap-4 group cursor-default">
+                <div className="w-12 h-12 md:w-14 md:h-14 rounded-2xl bg-slate-800 flex items-center justify-center text-orange-500 group-hover:bg-orange-600 group-hover:text-white transition-colors flex-shrink-0">
+                    <i className={`${icon} text-lg md:text-xl`}></i>
+                </div>
+                <div>
+                    <p className="text-xs md:text-sm text-slate-400 mb-0.5">{title}</p>
+                    {link ? (
+                        <a href={link} target="_blank" rel="noreferrer" className="text-base md:text-lg font-bold text-white hover:text-orange-400 transition-colors">{desc}</a>
+                    ) : (
+                        <p className="text-base md:text-lg font-bold text-white keep-all">{desc}</p>
+                    )}
+                </div>
+            </div>
+        );
+
+        const root = ReactDOM.createRoot(document.getElementById('root'));
+        root.render(<App />);
+    </script>
+</body>
+</html>
+
+
