@@ -130,7 +130,7 @@ const App=()=>{
         setIsMenuOpen(false);
     };
 
-    const navItems=[{l:'소개',id:'about'},{l:'차별점',id:'features'},{l:'서비스',id:'services'},{l:'파트너',id:'portfolio'},{l:'프로세스',id:'process'}];
+    const navItems=[{l:'소개',id:'about'},{l:'차별점',id:'features'},{l:'서비스',id:'services'},{l:'포트폴리오',id:'portfolio'},{l:'프로세스',id:'process'}];
 
     /* NAV */
     const Nav=(
@@ -199,7 +199,7 @@ const App=()=>{
                         </button>
                     </div>
                     <div className="hero4 grid grid-cols-3 gap-3 max-w-sm">
-                        {[{n:'8년+',l:'현장 경험'},{n:'11+',l:'파트너 매장'},{n:'진주·경남',l:'전문 지역'}].map((s,i)=>(
+                        {[{n:'8년+',l:'현장 경험'},{n:'14+',l:'파트너/프로젝트'},{n:'정치·로컬',l:'전문 영역'}].map((s,i)=>(
                             <div key={i} className="bezel-card text-center py-4 px-2">
                                 <div className="text-white font-black text-xl mb-1">{s.n}</div>
                                 <div className="text-slate-500 text-xs font-semibold">{s.l}</div>
@@ -346,6 +346,33 @@ const App=()=>{
         </section>
     );
 
+    const POLITICAL_CASES=[
+        {
+            name:'국민의힘 강민국 국회의원 홈페이지',
+            type:'국회의원 공식 홈페이지 제작',
+            url:'https://강민국.com',
+            displayUrl:'강민국.COM',
+            image:'assets/portfolio/kang-minguk-home.png',
+            party:'국민의힘 · 경남 진주시을',
+            summary:'의정활동, 지역 민원, 소통회원 DB까지 한 번에 운영할 수 있는 정치인 공식 홈페이지입니다.',
+            features:['국회의원 공식 의정활동 브랜딩','네이버 지도 기반 진주 소통지도와 지도 핀 필터','소통회원·당원 DB 구축을 위한 자체 회원가입/로그인','비공개 민원·제안 게시판과 관리자 확인 흐름'],
+            highlight:true,
+            color:'#e61e2b'
+        },
+        {
+            name:'더불어민주당 류성국 시의원 후보 홈페이지',
+            type:'시의원 후보 선거 홈페이지 제작',
+            url:'https://류성국.kr',
+            displayUrl:'류성국.KR',
+            image:'assets/portfolio/ryu-seongkuk-home.png',
+            party:'더불어민주당 · 창원시 다선거구 명곡·봉림',
+            summary:'후보 소개, 공약, 활동, 문의를 모바일 중심으로 압축한 선거 캠페인형 홈페이지입니다.',
+            features:['후보 소개·공약·활동·문의 페이지 구성','네이버 지도 기반 명곡·봉림 소통지도와 공약 핀','카카오/문자 공유용 썸네일 메타 구성','모바일 빠른 메뉴와 후보 영상 팝업'],
+            highlight:false,
+            color:'#004ea2'
+        }
+    ];
+
     const PARTNERS=[
         {name:'타코이떠',cat:'외식업',color:'#f97316'},
         {name:'9992누룽지통닭',cat:'외식업',color:'#f97316'},
@@ -359,8 +386,6 @@ const App=()=>{
         {name:'3H지압침대 진주경상센터',cat:'헬스케어',color:'#10b981'},
         {name:'3H지압침대 상대센터',cat:'헬스케어',color:'#10b981'},
         {name:'황금두꺼비집밥셀프',cat:'외식업',color:'#f97316'},
-        {name:'강민국 의원 홈페이지',cat:'홈페이지 제작',color:'#6366f1'},
-        {name:'류성국 후보 홈페이지',cat:'홈페이지 제작',color:'#6366f1'},
     ];
 
     const Portfolio=(
@@ -370,10 +395,45 @@ const App=()=>{
                 <div className="text-center mb-12 reveal">
                     <div className="inline-flex items-center gap-2 text-orange-600 font-bold tracking-widest text-xs uppercase mb-4 bg-orange-50 px-4 py-2 rounded-full border border-orange-100">
                         <iconify-icon icon="solar:buildings-2-bold" width="14" style={{color:'#FF5C1A'}}></iconify-icon>
-                        파트너
+                        Portfolio
                     </div>
-                    <h2 className="text-3xl md:text-5xl font-black text-slate-900 mb-4 keep-all">함께한 프로젝트</h2>
-                    <p className="text-slate-500 text-sm md:text-base keep-all">현재 <strong className="text-slate-800">{PARTNERS.length}개</strong> 파트너/프로젝트와 함께합니다 · 진주 및 경남 지역의 다양한 업종</p>
+                    <h2 className="text-3xl md:text-5xl font-black text-slate-900 mb-4 keep-all">정치 홈페이지 제작 포트폴리오</h2>
+                    <p className="text-slate-500 text-sm md:text-base keep-all">국회의원 공식 홈페이지부터 시의원 후보 선거 페이지까지, 캠페인 목적에 맞는 기능형 웹사이트를 제작합니다.</p>
+                </div>
+
+                <div className="mb-14 grid gap-5 lg:grid-cols-2">
+                    {POLITICAL_CASES.map((project,i)=>(
+                        <article key={project.name} className={`reveal bezel-light overflow-hidden text-left stag${i+1} ${project.highlight?'lg:col-span-2 lg:grid lg:grid-cols-[1.15fr_0.85fr] lg:items-stretch':''}`}>
+                            <a href={project.url} target="_blank" rel="noopener noreferrer" className="group relative block overflow-hidden bg-slate-100">
+                                <img src={project.image} alt={`${project.name} 스크린샷`} className={`w-full object-cover transition duration-700 group-hover:scale-[1.03] ${project.highlight?'h-[260px] md:h-[420px] lg:h-full':'h-[240px]'}`}/>
+                                <div className="absolute left-4 top-4 rounded-full bg-white/92 px-4 py-2 text-xs font-black text-slate-900 shadow-lg backdrop-blur">
+                                    {project.type}
+                                </div>
+                            </a>
+                            <div className={`${project.highlight?'p-7 md:p-9 lg:p-10':'p-6 md:p-7'}`}>
+                                <p className="text-xs font-black uppercase tracking-[0.18em]" style={{color:project.color}}>{project.party}</p>
+                                <h3 className={`mt-3 font-black leading-tight text-slate-900 keep-all ${project.highlight?'text-3xl md:text-4xl':'text-2xl'}`}>{project.name}</h3>
+                                <p className="mt-4 text-sm md:text-base font-semibold leading-7 text-slate-600 keep-all">{project.summary}</p>
+                                <ul className="mt-6 grid gap-3">
+                                    {project.features.map((feature)=>(
+                                        <li key={feature} className="flex gap-3 text-sm font-bold leading-6 text-slate-700 keep-all">
+                                            <span className="mt-1.5 h-2 w-2 shrink-0 rounded-full" style={{background:project.color}}></span>
+                                            <span>{feature}</span>
+                                        </li>
+                                    ))}
+                                </ul>
+                                <a href={project.url} target="_blank" rel="noopener noreferrer" className="btn-spring mt-7 inline-flex items-center gap-2 rounded-full px-5 py-3 text-sm font-black text-white shadow-lg" style={{background:`linear-gradient(135deg, ${project.color}, #0f172a)`}}>
+                                    {project.displayUrl} 바로가기
+                                    <iconify-icon icon="solar:arrow-right-up-linear" width="16"></iconify-icon>
+                                </a>
+                            </div>
+                        </article>
+                    ))}
+                </div>
+
+                <div className="mb-8 text-center reveal">
+                    <h3 className="text-2xl md:text-3xl font-black text-slate-900 keep-all">함께한 파트너/프로젝트</h3>
+                    <p className="mt-3 text-slate-500 text-sm md:text-base keep-all">현재 <strong className="text-slate-800">{PARTNERS.length + POLITICAL_CASES.length}개</strong> 파트너/프로젝트와 함께합니다 · 진주 및 경남 지역의 다양한 업종</p>
                 </div>
                 <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 md:gap-4">
                     {PARTNERS.map((c,i)=>(
@@ -548,7 +608,7 @@ const App=()=>{
                     </div>
                     <div className="space-y-2">
                         <p className="text-slate-400 font-semibold text-sm mb-3">빠른 이동</p>
-                        {[{l:'소개',id:'about'},{l:'서비스',id:'services'},{l:'파트너',id:'portfolio'},{l:'문의',id:'contact'}].map(({l,id})=>(
+                        {[{l:'소개',id:'about'},{l:'서비스',id:'services'},{l:'포트폴리오',id:'portfolio'},{l:'문의',id:'contact'}].map(({l,id})=>(
                             <button key={id} onClick={()=>{const el=document.getElementById(id);if(el)el.scrollIntoView({behavior:'smooth'});}} className="block text-slate-500 text-sm hover:text-orange-400 transition-colors">{l}</button>
                         ))}
                     </div>
