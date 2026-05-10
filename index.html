@@ -559,8 +559,8 @@ const App=()=>{
 
     const SPILLS=['네이버/SNS','홈페이지제작','선거마케팅','자동화시스템','AI서비스','기타'];
 
-    /* ⬇ Formspree Form ID — 발급 후 여기에 입력 */
-    const FORMSPREE_ID = 'YOUR_FORM_ID';
+    /* ⬇ Web3Forms Access Key */
+    const WEB3FORMS_KEY = 'a3a26c08-405b-4a29-91fb-0b7ebe3f75af';
 
     const [formStatus,setFormStatus]=useState('idle'); // idle | sending | sent | error
 
@@ -568,12 +568,15 @@ const App=()=>{
         e.preventDefault();
         setFormStatus('sending');
         const fd=new FormData(e.target);
+        fd.append('access_key', WEB3FORMS_KEY);
+        fd.append('subject', '[짓마케팅] 새 상담 신청이 들어왔습니다');
         fd.append('관심_서비스', selSvc.join(', ') || '미선택');
         try{
-            const res=await fetch(`https://formspree.io/f/${FORMSPREE_ID}`,{
+            const res=await fetch('https://api.web3forms.com/submit',{
                 method:'POST',body:fd,headers:{Accept:'application/json'}
             });
-            if(res.ok){setFormStatus('sent');e.target.reset();setSelSvc([]);}
+            const json=await res.json();
+            if(json.success){setFormStatus('sent');e.target.reset();setSelSvc([]);}
             else{setFormStatus('error');}
         }catch{setFormStatus('error');}
     };
