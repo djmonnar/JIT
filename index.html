@@ -559,6 +559,25 @@ const App=()=>{
 
     const SPILLS=['네이버/SNS','홈페이지제작','선거마케팅','자동화시스템','AI서비스','기타'];
 
+    /* ⬇ Formspree Form ID — 발급 후 여기에 입력 */
+    const FORMSPREE_ID = 'YOUR_FORM_ID';
+
+    const [formStatus,setFormStatus]=useState('idle'); // idle | sending | sent | error
+
+    const handleSubmit=async e=>{
+        e.preventDefault();
+        setFormStatus('sending');
+        const fd=new FormData(e.target);
+        fd.append('관심_서비스', selSvc.join(', ') || '미선택');
+        try{
+            const res=await fetch(`https://formspree.io/f/${FORMSPREE_ID}`,{
+                method:'POST',body:fd,headers:{Accept:'application/json'}
+            });
+            if(res.ok){setFormStatus('sent');e.target.reset();setSelSvc([]);}
+            else{setFormStatus('error');}
+        }catch{setFormStatus('error');}
+    };
+
     const Contact=(
         <section id="contact" className="py-20 md:py-28 bg-[#0A0A0F] relative overflow-hidden grain">
             <div className="absolute top-0 right-0 w-[400px] h-[400px] bg-purple-600/15 rounded-full blur-[100px] opacity-40 pointer-events-none"></div>
@@ -593,14 +612,14 @@ const App=()=>{
                                 <ContactItem iconName="solar:phone-bold-duotone" title="문의전화" desc="010-9382-9110"/>
                             </div>
                         </div>
-                        <form className="space-y-4" onSubmit={e=>e.preventDefault()}>
+                        <form className="space-y-4" onSubmit={handleSubmit}>
                             <div className="space-y-1.5">
                                 <label className="text-xs font-bold text-slate-500 uppercase tracking-widest ml-1">업체명 / 성함</label>
-                                <input type="text" className="w-full bg-black/30 border border-white/10 rounded-2xl px-4 py-4 focus:outline-none focus:border-orange-500/50 focus:ring-2 focus:ring-orange-500/10 text-white placeholder-slate-600 transition-all" placeholder="예) 짓마케팅 / 홍길동"/>
+                                <input name="업체명_성함" type="text" required className="w-full bg-black/30 border border-white/10 rounded-2xl px-4 py-4 focus:outline-none focus:border-orange-500/50 focus:ring-2 focus:ring-orange-500/10 text-white placeholder-slate-600 transition-all" placeholder="예) 짓마케팅 / 홍길동"/>
                             </div>
                             <div className="space-y-1.5">
                                 <label className="text-xs font-bold text-slate-500 uppercase tracking-widest ml-1">연락처</label>
-                                <input type="text" className="w-full bg-black/30 border border-white/10 rounded-2xl px-4 py-4 focus:outline-none focus:border-orange-500/50 focus:ring-2 focus:ring-orange-500/10 text-white placeholder-slate-600 transition-all" placeholder="010-0000-0000"/>
+                                <input name="연락처" type="text" required className="w-full bg-black/30 border border-white/10 rounded-2xl px-4 py-4 focus:outline-none focus:border-orange-500/50 focus:ring-2 focus:ring-orange-500/10 text-white placeholder-slate-600 transition-all" placeholder="010-0000-0000"/>
                             </div>
                             <div className="space-y-1.5">
                                 <label className="text-xs font-bold text-slate-500 uppercase tracking-widest ml-1">관심 서비스</label>
@@ -615,10 +634,30 @@ const App=()=>{
                             </div>
                             <div className="space-y-1.5">
                                 <label className="text-xs font-bold text-slate-500 uppercase tracking-widest ml-1">문의 내용</label>
-                                <textarea rows="3" className="w-full bg-black/30 border border-white/10 rounded-2xl px-4 py-4 focus:outline-none focus:border-orange-500/50 focus:ring-2 focus:ring-orange-500/10 text-white placeholder-slate-600 transition-all" placeholder="고민 중인 내용을 간단히 적어주세요."></textarea>
+                                <textarea name="문의내용" rows="3" className="w-full bg-black/30 border border-white/10 rounded-2xl px-4 py-4 focus:outline-none focus:border-orange-500/50 focus:ring-2 focus:ring-orange-500/10 text-white placeholder-slate-600 transition-all" placeholder="고민 중인 내용을 간단히 적어주세요."></textarea>
                             </div>
-                            <button className="btn-spring w-full bg-gradient-to-r from-[#FF5C1A] to-[#E8282A] text-white font-bold py-4 rounded-2xl shadow-[0_0_30px_-8px_rgba(255,92,26,0.6)] flex items-center justify-center gap-2 mt-2 tracking-wide">
-                                무료 상담 신청하기 <iconify-icon icon="solar:arrow-right-bold" width="16"></iconify-icon>
+
+                            {formStatus==='sent' && (
+                                <div className="rounded-2xl bg-emerald-500/10 border border-emerald-500/20 px-4 py-3 text-emerald-400 text-sm font-semibold text-center">
+                                    상담 신청이 완료됐습니다. 24시간 내로 연락드릴게요.
+                                </div>
+                            )}
+                            {formStatus==='error' && (
+                                <div className="rounded-2xl bg-red-500/10 border border-red-500/20 px-4 py-3 text-red-400 text-sm font-semibold text-center">
+                                    전송 중 오류가 발생했습니다. 전화나 인스타그램으로 문의해주세요.
+                                </div>
+                            )}
+
+                            <button
+                                type="submit"
+                                disabled={formStatus==='sending'||formStatus==='sent'}
+                                className="btn-spring w-full bg-gradient-to-r from-[#FF5C1A] to-[#E8282A] text-white font-bold py-4 rounded-2xl shadow-[0_0_30px_-8px_rgba(255,92,26,0.6)] flex items-center justify-center gap-2 mt-2 tracking-wide disabled:opacity-60 disabled:cursor-not-allowed disabled:transform-none">
+                                {formStatus==='sending'
+                                    ?<><iconify-icon icon="solar:refresh-bold" width="16" className="animate-spin"></iconify-icon> 전송 중...</>
+                                    :formStatus==='sent'
+                                    ?<><iconify-icon icon="solar:check-circle-bold" width="16"></iconify-icon> 신청 완료</>
+                                    :<>무료 상담 신청하기 <iconify-icon icon="solar:arrow-right-bold" width="16"></iconify-icon></>
+                                }
                             </button>
                         </form>
                     </div>
