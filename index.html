@@ -570,7 +570,7 @@ const App=()=>{
         const fd=new FormData(e.target);
         fd.append('access_key', WEB3FORMS_KEY);
         fd.append('subject', '[짓마케팅] 새 상담 신청이 들어왔습니다');
-        fd.append('관심_서비스', selSvc.join(', ') || '미선택');
+        fd.append('service', selSvc.join(', ') || '미선택');
         try{
             const res=await fetch('https://api.web3forms.com/submit',{
                 method:'POST',body:fd,headers:{Accept:'application/json'}
@@ -618,11 +618,11 @@ const App=()=>{
                         <form className="space-y-4" onSubmit={handleSubmit}>
                             <div className="space-y-1.5">
                                 <label className="text-xs font-bold text-slate-500 uppercase tracking-widest ml-1">업체명 / 성함</label>
-                                <input name="업체명_성함" type="text" required className="w-full bg-black/30 border border-white/10 rounded-2xl px-4 py-4 focus:outline-none focus:border-orange-500/50 focus:ring-2 focus:ring-orange-500/10 text-white placeholder-slate-600 transition-all" placeholder="예) 짓마케팅 / 홍길동"/>
+                                <input name="name" type="text" required className="w-full bg-black/30 border border-white/10 rounded-2xl px-4 py-4 focus:outline-none focus:border-orange-500/50 focus:ring-2 focus:ring-orange-500/10 text-white placeholder-slate-600 transition-all" placeholder="예) 짓마케팅 / 홍길동"/>
                             </div>
                             <div className="space-y-1.5">
                                 <label className="text-xs font-bold text-slate-500 uppercase tracking-widest ml-1">연락처</label>
-                                <input name="연락처" type="text" required className="w-full bg-black/30 border border-white/10 rounded-2xl px-4 py-4 focus:outline-none focus:border-orange-500/50 focus:ring-2 focus:ring-orange-500/10 text-white placeholder-slate-600 transition-all" placeholder="010-0000-0000"/>
+                                <input name="phone" type="text" required className="w-full bg-black/30 border border-white/10 rounded-2xl px-4 py-4 focus:outline-none focus:border-orange-500/50 focus:ring-2 focus:ring-orange-500/10 text-white placeholder-slate-600 transition-all" placeholder="010-0000-0000"/>
                             </div>
                             <div className="space-y-1.5">
                                 <label className="text-xs font-bold text-slate-500 uppercase tracking-widest ml-1">관심 서비스</label>
@@ -637,7 +637,7 @@ const App=()=>{
                             </div>
                             <div className="space-y-1.5">
                                 <label className="text-xs font-bold text-slate-500 uppercase tracking-widest ml-1">문의 내용</label>
-                                <textarea name="문의내용" rows="3" className="w-full bg-black/30 border border-white/10 rounded-2xl px-4 py-4 focus:outline-none focus:border-orange-500/50 focus:ring-2 focus:ring-orange-500/10 text-white placeholder-slate-600 transition-all" placeholder="고민 중인 내용을 간단히 적어주세요."></textarea>
+                                <textarea name="message" rows="3" className="w-full bg-black/30 border border-white/10 rounded-2xl px-4 py-4 focus:outline-none focus:border-orange-500/50 focus:ring-2 focus:ring-orange-500/10 text-white placeholder-slate-600 transition-all" placeholder="고민 중인 내용을 간단히 적어주세요."></textarea>
                             </div>
 
                             {formStatus==='sent' && (
