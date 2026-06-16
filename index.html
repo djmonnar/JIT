@@ -31,7 +31,7 @@
   <script src="https://code.iconify.design/iconify-icon/1.0.8/iconify-icon.min.js"></script>
   <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
   <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
-  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+  <script src="https://unpkg.com/@babel/standalone@7.29.7/babel.min.js"></script>
   <style>
     html { scroll-behavior: smooth; }
     body { font-family: 'Pretendard Variable', Pretendard, -apple-system, sans-serif; }
@@ -79,7 +79,7 @@
   <div id="scroll-bar"></div>
   <div id="root"></div>
 
-  <script type="text/babel">
+  <script type="text/babel" data-presets="env,react">
     const { useEffect, useMemo, useState } = React;
 
     const LOGO = "https://i.ibb.co/xS7vHBCg/ZIT-MARKETING-LOGO.png";
